@@ -3,7 +3,7 @@
 	+---------------------------------------------------------------+
 	|	e107 website system
 	|
-	|	(C) MUWA-Spelle 2008-2011
+	|	(C) MUWA-Spelle 2008-2012
 	|	http://www.muwa-spelle.com
 	|	info@muwa-spelle.com
 	|
@@ -14,22 +14,107 @@
 		
 		const STATUS_LENGTH_MAX = 140;
 		
-		private $twitter;
+		private $id;
+		private $tid;
+		private $time;
+		private $title;
+		private $category;
+		private $thumbnail;
 		
 		public function links_pageontwitter(){
 			
 		}
 		
-		private function setTwitter($twitter){
-			$result = $this->twitter;
+		public function setId($id){
+			$result = $this->id;
 			{
-				$this->twitter = $twitter;
+				$this->id = $id;
 			}
 			return $result;
 		}
 		
-		public function getTwitter(){
-			$result = $this->twitter;
+		public function getId(){
+			$result = $this->id;
+			{
+				
+			}
+			return $result;
+		}
+		
+		public function setTId($tid){
+			$result = $this->tid;
+			{
+				$this->tid = $tid;
+			}
+			return $result;
+		}
+		
+		public function getTId(){
+			$result = $this->tid;
+			{
+				
+			}
+			return $result;
+		}
+		
+		private function setTime($time){
+			$result = $this->time;
+			{
+				$this->time = $time;
+			}
+			return $result;
+		}
+		
+		public function getTime(){
+			$result = $this->time;
+			{
+				
+			}
+			return $result;
+		}
+		
+		private function setTitle($title){
+			$result = $this->title;
+			{
+				$this->title = $title;
+			}
+			return $result;
+		}
+		
+		public function getTitle(){
+			$result = $this->title;
+			{
+				
+			}
+			return $result;
+		}
+		
+		private function setCategory($category){
+			$result = $this->category;
+			{
+				$this->category = $category;
+			}
+			return $result;
+		}
+		
+		public function getCategory(){
+			$result = $this->category;
+			{
+				
+			}
+			return $result;
+		}
+		
+		private function setThumbnail($thumbnail){
+			$result = $this->thumbnail;
+			{
+				$this->thumbnail = $thumbnail;
+			}
+			return $result;
+		}
+		
+		public function getThumbnail(){
+			$result = $this->thumbnail;
 			{
 				
 			}
@@ -99,36 +184,115 @@
 			return $result;
 		}
 		
-		public function send($link){
+		public static function build_api(){
 			global $links_pageontwitter_config;
 			
+			$result = new TwitterOAuth(
+					$links_pageontwitter_config[LINKS_PAGEONTWITTER_CONSUMER_KEY],
+					$links_pageontwitter_config[LINKS_PAGEONTWITTER_CONSUMER_SECRET],
+					$links_pageontwitter_config[LINKS_PAGEONTWITTER_ACCESS_TOKEN],
+					$links_pageontwitter_config[LINKS_PAGEONTWITTER_ACCESS_TOKEN_SECRET]
+				);
+			return $result;
+		}
+		
+		public static function send($api, $link){
+			$result = $api->post('statuses/update', links_pageontwitter::parse_link($link));
+			{
+				
+			}
+			return $result;
+		}
+		
+		public static function insert($conn, $id, $tid){
+			$result = $conn -> db_Insert("links_pageontwitter",
+					array(
+							'id' => $id,
+							'tid' => $tid,
+						)
+				);
+				
+			return $result;
+		}
+		
+		public static function load_by_id($conn, $id){
 			$result = null;
 			{
-				$twitter = $this->getTwitter();
-				{
-					$result = $twitter->post('statuses/update', links_pageontwitter::parse_link($link));
+				$conn->db_Select("links_pageontwitter", "*", "`id`='".$id."'");
+				if($item = $conn->db_Fetch(MYSQL_ASSOC)){
+					$conn -> db_Select("news", "*", "`news_id` = '".$id."'");
+					if($row = $conn->db_Fetch(MYSQL_ASSOC)){
+						{
+							$row += $item;
+						}
+						$result = links_pageontwitter::parse_from_row($row);
+					}
 				}
 			}
 			return $result;
 		}
 		
-		public static function load(){
-			global $links_pageontwitter_config, $sql, $eArrayStorage;
-			
+		public static function remove_by_id($conn, $id){
+			$result = $conn->db_Delete("links_pageontwitter", "`id`='".$id."'");
+			{
+				
+			}
+			return $result;
+		}
+		
+		public static function remove_by_tid($conn, $api, $tid){
+			$result = null;
+			{
+				try{
+					$result = $api->delete('statuses/destroy/'.$tid);
+				}catch(Exception $e){
+					// print_r($e);
+				}
+				$conn->db_Delete("links_pageontwitter", "`tid`='".$tid."'");
+			}
+			return $result;
+		}
+		
+		public static function parse_from_row($row){
 			$result = new links_pageontwitter();
 			{
-				$twitter = new TwitterOAuth(
-									$links_pageontwitter_config[LINKS_PAGEONTWITTER_CONSUMER_KEY],
-									$links_pageontwitter_config[LINKS_PAGEONTWITTER_CONSUMER_SECRET],
-									$links_pageontwitter_config[LINKS_PAGEONTWITTER_ACCESS_TOKEN],
-									$links_pageontwitter_config[LINKS_PAGEONTWITTER_ACCESS_TOKEN_SECRET]
-								);
+				$result->setId($row['id']);
+				$result->setTId($row['tid']);
+				$result->setTime($row['time']);
+				$result->setTitle($row['news_title']);
+				$result->setCategory($row['news_category']);
+				$result->setThumbnail($row['news_thumbnail']);
+			}
+			return $result;
+		}
+		
+		public static function list_all($conn){
+			$result = array();
+			
+			{
+				$list = array();
 				{
-					$result->setTwitter($twitter);
+					$conn -> db_Select("links_pageontwitter", "*");
+					while($row = $conn->db_Fetch(MYSQL_ASSOC)){
+						$list[$row['tid']] = $row;
+					}
+				}
+
+				foreach($list as $tid => $item){
+					$conn -> db_Select("links_page", "*", "`link_id` = '".$item['id']."'");
+					if($row = $conn->db_Fetch(MYSQL_ASSOC)){
+						{
+							$row += $item;
+						}
+						array_push($result, links_pageontwitter::parse_from_row($row));
+					}else{
+						links_pageontwitter::remove_by_id($conn, $item['id']);
+					}
 				}
 			}
 			return $result;
 		}
+		
 	}
 
 ?>

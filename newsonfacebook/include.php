@@ -3,7 +3,7 @@
 	+---------------------------------------------------------------+
 	|	e107 website system
 	|
-	|	(C) MUWA-Spelle 2008-2011
+	|	(C) MUWA-Spelle 2008-2012
 	|	http://www.muwa-spelle.com
 	|	info@muwa-spelle.com
 	|
@@ -33,7 +33,7 @@ if(!function_exists('load_newsonfacebook_config')){
 				$result[NEWSONFACEBOOK_APP_SECRET] = isset($pref[NEWSONFACEBOOK_APP_SECRET]) ? $pref[NEWSONFACEBOOK_APP_SECRET] : null;
 				{
 					$sql -> db_Select("newsonfacebook_config");
-					while($row = $sql->db_Fetch()){
+					while($row = $sql->db_Fetch(MYSQL_ASSOC)){
 						$value = $row['newsonfacebook_config_value'];
 						{
 							$key = $row['newsonfacebook_config_key'];
@@ -74,12 +74,35 @@ if(!function_exists('load_newsonfacebook_config')){
 	function update_newsonfacebook_synchronization($time){
 		global $sql;
 		{
-			$sql->db_Delete("newsonfacebook_config", " `newsonfacebook_config_key` = '".NEWSONFACEBOOK_SYNCHRONIZATION."' ");
+			$sql->db_Delete("newsonfacebook_config", "`newsonfacebook_config_key` = '".NEWSONFACEBOOK_SYNCHRONIZATION."' ");
 			{
 				$sql->db_Insert("newsonfacebook_config", array("newsonfacebook_config_key" => NEWSONFACEBOOK_SYNCHRONIZATION, "newsonfacebook_config_value" => $time));
 			}
 		}
 	}
+	
+	function parse_newsonfacebook_data_to_array($qry){
+        $result = null;
+		if(strpos($qry,'=')){
+			if(strpos($qry,'?')!==false){
+				$q = parse_url($qry);
+				{
+					$qry = $q['query'];
+				}
+			}
+			
+			{
+				$result = array();
+				foreach (explode('&', $qry) as $couple){
+					list ($key, $val) = explode('=', $couple);
+					{
+						$result[$key] = $val;
+					}
+				}
+			}
+		}
+        return $result;
+    }
 }
 
 ?>

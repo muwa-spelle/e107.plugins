@@ -3,7 +3,7 @@
 	+---------------------------------------------------------------+
 	|	e107 website system
 	|
-	|	(C) MUWA-Spelle 2008-2011
+	|	(C) MUWA-Spelle 2008-2012
 	|	http://www.muwa-spelle.com
 	|	info@muwa-spelle.com
 	|
@@ -12,39 +12,107 @@
 
 	class links_pageonfacebook{
 		
-		private $facebook;
-		private $linkspage_pref;
+		private $id;
+		private $fid;
+		private $time;
+		private $title;
+		private $category;
+		private $thumbnail;
 		
 		public function links_pageonfacebook(){
 			
 		}
 		
-		private function setFacebook($facebook){
-			$result = $this->facebook;
+		public function setId($id){
+			$result = $this->id;
 			{
-				$this->facebook = $facebook;
+				$this->id = $id;
 			}
 			return $result;
 		}
 		
-		public function getFacebook(){
-			$result = $this->facebook;
+		public function getId(){
+			$result = $this->id;
 			{
 				
 			}
 			return $result;
 		}
 		
-		private function setLinksPagePref($linkspage_pref){
-			$result = $this->linkspage_pref;
+		public function setFId($fid){
+			$result = $this->fid;
 			{
-				$this->linkspage_pref = $linkspage_pref;
+				$this->fid = $fid;
 			}
 			return $result;
 		}
 		
-		public function getLinksPagePref(){
-			$result = $this->linkspage_pref;
+		public function getFId(){
+			$result = $this->fid;
+			{
+				
+			}
+			return $result;
+		}
+		
+		private function setTime($time){
+			$result = $this->time;
+			{
+				$this->time = $time;
+			}
+			return $result;
+		}
+		
+		public function getTime(){
+			$result = $this->time;
+			{
+				
+			}
+			return $result;
+		}
+		
+		private function setTitle($title){
+			$result = $this->title;
+			{
+				$this->title = $title;
+			}
+			return $result;
+		}
+		
+		public function getTitle(){
+			$result = $this->title;
+			{
+				
+			}
+			return $result;
+		}
+		
+		private function setCategory($category){
+			$result = $this->category;
+			{
+				$this->category = $category;
+			}
+			return $result;
+		}
+		
+		public function getCategory(){
+			$result = $this->category;
+			{
+				
+			}
+			return $result;
+		}
+		
+		private function setThumbnail($thumbnail){
+			$result = $this->thumbnail;
+			{
+				$this->thumbnail = $thumbnail;
+			}
+			return $result;
+		}
+		
+		public function getThumbnail(){
+			$result = $this->thumbnail;
 			{
 				
 			}
@@ -113,50 +181,129 @@
 			return $result;
 		}
 		
-		public function send($link){
+		public function send($api, $link){
 			global $links_pageonfacebook_config;
 			
 			$result = null;
 			{
-				$facebook = $this->getFacebook();
+				$lc = new linkclass();
 				{
-					$data = links_pageonfacebook::parse_link($link, $this->getLinksPagePref());
+					$data = links_pageonfacebook::parse_link($link, $lc -> getLinksPagePref());
 					{
 						{
 							$data['access_token'] = $links_pageonfacebook_config[LINKS_PAGEONFACEBOOK_ACCESS_TOKEN];
 						}
-						$result = $facebook->api($links_pageonfacebook_config[LINKS_PAGEONFACEBOOK_PROFILE_ID].'/feed/', 'post', $data);
+						$result = $api->api($links_pageonfacebook_config[LINKS_PAGEONFACEBOOK_PROFILE_ID].'/feed/', 'post', $data);
 					}
 				}
 			}
 			return $result;
 		}
 		
-		public static function load(){
-			global $links_pageonfacebook_config, $sql, $eArrayStorage;
+		
+		public static function build_api(){
+			global $links_pageonfacebook_config;
 			
-			$result = new links_pageonfacebook();
+			$result = new Facebook(
+					array(
+						'appId'  => $links_pageonfacebook_config[LINKS_PAGEONFACEBOOK_APP_ID],
+						'secret' => $links_pageonfacebook_config[LINKS_PAGEONFACEBOOK_APP_SECRET],
+					)
+				);
+			return $result;
+		}
+		
+		public static function insert($conn, $id, $fid){
+			$result = $conn -> db_Insert("links_pageonfacebook",
+					array(
+							'id' => $id,
+							'fid' => $fid,
+						)
+				);
+				
+			return $result;
+		}
+		
+		public static function load_by_id($conn, $id){
+			$result = null;
 			{
-				{
-					$num_rows = $sql -> db_Select("core", "*", "e107_name='links_page' ");
-					if($num_rows > 0){
-						$row = $sql -> db_Fetch();
+				$conn->db_Select("links_pageonfacebook", "*", "`id`='".$id."'");
+				if($item = $conn->db_Fetch(MYSQL_ASSOC)){
+					$conn -> db_Select("news", "*", "`news_id` = '".$id."'");
+					if($row = $conn->db_Fetch(MYSQL_ASSOC)){
 						{
-							$result->setLinksPagePref($eArrayStorage->ReadArray($row['e107_value']));
+							$row += $item;
 						}
-					}else{
-						$result->setLinksPagePref(array());
+						$result = links_pageonfacebook::parse_from_row($row);
 					}
 				}
-				{
-					$facebook = new Facebook(
-									array(
-										'appId'  => $links_pageonfacebook_config[LINKS_PAGEONFACEBOOK_APP_ID],
-										'secret' => $links_pageonfacebook_config[LINKS_PAGEONFACEBOOK_APP_SECRET],
-									)
-								);
+			}
+			return $result;
+		}
+		
+		public static function remove_by_id($conn, $id){
+			$result = $conn->db_Delete("links_pageonfacebook", "`id`='".$id."'");
+			{
+				
+			}
+			return $result;
+		}
+		
+		public static function remove_by_fid($conn, $api, $fid){
+			global $links_pageonfacebook_config;
+			
+			$result = null;
+			{
+				try{
+					$data = array();
 					{
-						$result->setFacebook($facebook);
+						{
+							$data['access_token'] = $links_pageonfacebook_config[LINKS_PAGEONFACEBOOK_ACCESS_TOKEN];
+						}
+						$result = $api->api($fid, 'delete', $data);
+					}
+				}catch(Exception $e){
+					// print_r($e);
+				}
+				$conn->db_Delete("links_pageonfacebook", "`fid`='".$fid."'");
+			}
+			return $result;
+		}
+		
+		public static function parse_from_row($row){
+			$result = new links_pageonfacebook();
+			{
+				$result->setId($row['id']);
+				$result->setFId($row['fid']);
+				$result->setTime($row['time']);
+				$result->setTitle($row['news_title']);
+				$result->setCategory($row['news_category']);
+				$result->setThumbnail($row['news_thumbnail']);
+			}
+			return $result;
+		}
+		
+		public static function list_all($conn){
+			$result = array();
+			
+			{
+				$list = array();
+				{
+					$conn -> db_Select("links_pageonfacebook", "*");
+					while($row = $conn->db_Fetch(MYSQL_ASSOC)){
+						$list[$row['fid']] = $row;
+					}
+				}
+
+				foreach($list as $fid => $item){
+					$conn -> db_Select("links_page", "*", "`link_id` = '".$item['id']."'");
+					if($row = $conn->db_Fetch(MYSQL_ASSOC)){
+						{
+							$row += $item;
+						}
+						array_push($result, links_pageonfacebook::parse_from_row($row));
+					}else{
+						links_pageonfacebook::remove_by_id($conn, $item['id']);
 					}
 				}
 			}

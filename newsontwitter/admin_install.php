@@ -3,7 +3,7 @@
 	+---------------------------------------------------------------+
 	|	e107 website system
 	|
-	|	(C) MUWA-Spelle 2008-2011
+	|	(C) MUWA-Spelle 2008-2012
 	|	http://www.muwa-spelle.com
 	|	info@muwa-spelle.com
 	|
@@ -17,7 +17,7 @@ if ( ! getperms('P')) { header('location:'.e_BASE.'index.php'); exit(); }
 require_once(e_PLUGIN."newsontwitter/include.php");
 global $pref, $sql, $tp;
 
-include_lan(e_PLUGIN.'newsontwitter/languages/'.e_LANGUAGE.'/lan_admin.php');
+include_lan(e_PLUGIN.'newsontwitter/languages/'.e_LANGUAGE.'.php');
 $pageid = 'install';
 if(isset($_POST['submitted'])){
 	if(isset($_POST[NEWSONTWITTER_VERIFIER])){
@@ -29,14 +29,14 @@ if(isset($_POST['submitted'])){
 			$token = $twitter->getAccessToken($_POST[NEWSONTWITTER_VERIFIER]);
 			{
 				{
-					$sql->db_Delete("newsontwitter_config", " `newsontwitter_config_key` = '".NEWSONTWITTER_ACCESS_TOKEN."' ");
+					$sql->db_Delete("newsontwitter_config", "`newsontwitter_config_key` = '".NEWSONTWITTER_ACCESS_TOKEN."' ");
 					{
 						$sql->db_Insert("newsontwitter_config", array("newsontwitter_config_key" => NEWSONTWITTER_ACCESS_TOKEN, "newsontwitter_config_value" => $tp->toDB($token[NEWSONTWITTER_VERIFIER_TOKEN])));
 					}
 				}
 				
 				{
-					$sql->db_Delete("newsontwitter_config", " `newsontwitter_config_key` = '".NEWSONTWITTER_ACCESS_TOKEN_SECRET."' ");
+					$sql->db_Delete("newsontwitter_config", "`newsontwitter_config_key` = '".NEWSONTWITTER_ACCESS_TOKEN_SECRET."' ");
 					{
 						$sql->db_Insert("newsontwitter_config", array("newsontwitter_config_key" => NEWSONTWITTER_ACCESS_TOKEN_SECRET, "newsontwitter_config_value" => $tp->toDB($token[NEWSONTWITTER_VERIFIER_TOKEN_SECRET])));
 					}
@@ -101,7 +101,7 @@ if(isset($_POST['submitted'])){
 				$text .= $form->form_close();
     		$text .= "</div>";
     		{
-				$ns->tablerender(MAIN_ADMIN_L2, $text);
+				$ns->tablerender(MAIN_ADMIN_NEWSONTWITTER_L3, $text);
 			}
     	}
     }

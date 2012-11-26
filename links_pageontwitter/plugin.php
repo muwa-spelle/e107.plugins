@@ -3,7 +3,7 @@
 	+---------------------------------------------------------------+
 	|	e107 website system
 	|
-	|	(C) MUWA-Spelle 2008-2011
+	|	(C) MUWA-Spelle 2008-2012
 	|	http://www.muwa-spelle.com
 	|	info@muwa-spelle.com
 	|
@@ -15,7 +15,7 @@ if (!defined('e107_INIT')) { exit; }
 	global $PLUGINS_DIRECTORY;
 
 	$eplug_name = "Links Seite on Twitter";
-	$eplug_version = "0.01";
+	$eplug_version = "0.02";
 	$eplug_author = "MUWA-Spelle";
 	
 	$eplug_url = "http://www.muwa-spelle.com";
@@ -38,8 +38,7 @@ if (!defined('e107_INIT')) { exit; }
 	$eplug_link_name = null;
 	$eplug_link_url = null;
 	$eplug_link_icon = null;
-	
-	$eplug_link_perms = "Everyone";
+	$eplug_link_perms = e_UC_MEMBER;
 
 	$eplug_done = "\"Links Seite on Twitter\" successfully installed!";
 
@@ -54,6 +53,7 @@ if (!defined('e107_INIT')) { exit; }
 									"links_pageontwitter_consumer_secret",
 	);
 	$eplug_table_names = array(
+									"links_pageontwitter",
 									"links_pageontwitter_config",
 	);
 	$eplug_tables = array(
@@ -61,6 +61,12 @@ if (!defined('e107_INIT')) { exit; }
   `links_pageontwitter_config_key` varchar(100) NOT NULL DEFAULT '',
   `links_pageontwitter_config_value` text NOT NULL DEFAULT '',
   PRIMARY KEY (`links_pageontwitter_config_key`)
+) ENGINE=MyISAM",
+									"CREATE TABLE IF NOT EXISTS `".MPREFIX."links_pageontwitter` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `tid` char(50) NOT NULL DEFAULT '',
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM",
 	);
 

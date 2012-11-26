@@ -3,7 +3,7 @@
 	+---------------------------------------------------------------+
 	|	e107 website system
 	|
-	|	(C) MUWA-Spelle 2008-2011
+	|	(C) MUWA-Spelle 2008-2012
 	|	http://www.muwa-spelle.com
 	|	info@muwa-spelle.com
 	|
@@ -33,7 +33,7 @@ if(!function_exists('load_links_pageonfacebook_config')){
 				$result[LINKS_PAGEONFACEBOOK_APP_SECRET] = isset($pref[LINKS_PAGEONFACEBOOK_APP_SECRET]) ? $pref[LINKS_PAGEONFACEBOOK_APP_SECRET] : null;
 				{
 					$sql -> db_Select("links_pageonfacebook_config");
-					while($row = $sql->db_Fetch()){
+					while($row = $sql->db_Fetch(MYSQL_ASSOC)){
 						$value = $row['links_pageonfacebook_config_value'];
 						{
 							$key = $row['links_pageonfacebook_config_key'];

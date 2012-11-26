@@ -3,7 +3,7 @@
 	+---------------------------------------------------------------+
 	|	e107 website system
 	|
-	|	(C) MUWA-Spelle 2008-2011
+	|	(C) MUWA-Spelle 2008-2012
 	|	http://www.muwa-spelle.com
 	|	info@muwa-spelle.com
 	|
@@ -17,7 +17,7 @@ if ( ! getperms('P')) { header('location:'.e_BASE.'index.php'); exit(); }
 require_once(e_PLUGIN."links_pageontwitter/include.php");
 global $pref, $sql, $tp;
 
-include_lan(e_PLUGIN.'links_pageontwitter/languages/'.e_LANGUAGE.'/lan_admin.php');
+include_lan(e_PLUGIN.'links_pageontwitter/languages/'.e_LANGUAGE.'.php');
 $pageid = 'install';
 if(isset($_POST['submitted'])){
 	if(isset($_POST[LINKS_PAGEONTWITTER_VERIFIER])){
@@ -101,7 +101,7 @@ if(isset($_POST['submitted'])){
 				$text .= $form->form_close();
     		$text .= "</div>";
     		{
-				$ns->tablerender(MAIN_ADMIN_L2, $text);
+				$ns->tablerender(MAIN_ADMIN_LINKS_PAGEONTWITTER_L3, $text);
 			}
     	}
     }

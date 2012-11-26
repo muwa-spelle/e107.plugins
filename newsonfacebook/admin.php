@@ -3,7 +3,7 @@
 	+---------------------------------------------------------------+
 	|	e107 website system
 	|
-	|	(C) MUWA-Spelle 2008-2011
+	|	(C) MUWA-Spelle 2008-2012
 	|	http://www.muwa-spelle.com
 	|	info@muwa-spelle.com
 	|
@@ -15,35 +15,37 @@ require_once("../../class2.php");
 if ( ! getperms('P')) { header('location:'.e_BASE.'index.php'); exit(); }
 
 require_once(e_PLUGIN."newsonfacebook/include.php");
+include_once(e_ADMIN."header.php");
+
 global $pref, $sql, $tp;
 
-include_lan(e_PLUGIN.'newsonfacebook/languages/'.e_LANGUAGE.'/lan_admin.php');
+include_lan(e_PLUGIN.'newsonfacebook/languages/'.e_LANGUAGE.'.php');
 
 $pageid = 'config';
 if(isset($_POST['submitted'])){
 	{
-		$sql->db_Delete("newsonfacebook_config", " `newsonfacebook_config_key` = '".NEWSONFACEBOOK_CATEGORIE_LIST."' ");
+		$sql->db_Delete("newsonfacebook_config", "`newsonfacebook_config_key` = '".NEWSONFACEBOOK_CATEGORIE_LIST."' ");
 		{
 			$sql->db_Insert("newsonfacebook_config", array("newsonfacebook_config_key" => NEWSONFACEBOOK_CATEGORIE_LIST, "newsonfacebook_config_value" => $tp->toDB(implode(NEWSONFACEBOOK_CATEGORIE_LIST_DELIMITER, $_POST[NEWSONFACEBOOK_CATEGORIE_LIST]))));
 		}
 	}
 	
 	{
-		$sql->db_Delete("newsonfacebook_config", " `newsonfacebook_config_key` = '".NEWSONFACEBOOK_USERCLASS."' ");
+		$sql->db_Delete("newsonfacebook_config", "`newsonfacebook_config_key` = '".NEWSONFACEBOOK_USERCLASS."' ");
 		{
 			$sql->db_Insert("newsonfacebook_config", array("newsonfacebook_config_key" => NEWSONFACEBOOK_USERCLASS, "newsonfacebook_config_value" => $tp->toDB($_POST[NEWSONFACEBOOK_USERCLASS])));
 		}
 	}
 	
 	{
-		$sql->db_Delete("newsonfacebook_config", " `newsonfacebook_config_key` = '".NEWSONFACEBOOK_ACCESS_TOKEN."' ");
+		$sql->db_Delete("newsonfacebook_config", "`newsonfacebook_config_key` = '".NEWSONFACEBOOK_ACCESS_TOKEN."' ");
 		{
 			$sql->db_Insert("newsonfacebook_config", array("newsonfacebook_config_key" => NEWSONFACEBOOK_ACCESS_TOKEN, "newsonfacebook_config_value" => $tp->toDB($_POST[NEWSONFACEBOOK_ACCESS_TOKEN])));
 		}
 	}
 	
 	{
-		$sql->db_Delete("newsonfacebook_config", " `newsonfacebook_config_key` = '".NEWSONFACEBOOK_PROFILE_ID."' ");
+		$sql->db_Delete("newsonfacebook_config", "`newsonfacebook_config_key` = '".NEWSONFACEBOOK_PROFILE_ID."' ");
 		{
 			$sql->db_Insert("newsonfacebook_config", array("newsonfacebook_config_key" => NEWSONFACEBOOK_PROFILE_ID, "newsonfacebook_config_value" => $tp->toDB($_POST[NEWSONFACEBOOK_PROFILE_ID])));
 		}
@@ -81,7 +83,6 @@ if(isset($_POST['submitted'])){
 
 {
 	require_once(e_HANDLER."form_handler.php");
-    include_once(e_ADMIN."header.php");
     require_once(e_HANDLER.'userclass_class.php');
 	
 	{
@@ -142,7 +143,7 @@ if(isset($_POST['submitted'])){
 				$text .= $form->form_close();
     		$text .= "</div>";
     		{
-				$ns->tablerender(MAIN_ADMIN_L2, $text);
+				$ns->tablerender(MAIN_ADMIN_NEWSONFACEBOOK_L4, $text);
 			}
     	}
     	

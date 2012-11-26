@@ -3,7 +3,7 @@
 	+---------------------------------------------------------------+
 	|	e107 website system
 	|
-	|	(C) MUWA-Spelle 2008-2011
+	|	(C) MUWA-Spelle 2008-2012
 	|	http://www.muwa-spelle.com
 	|	info@muwa-spelle.com
 	|
@@ -37,7 +37,7 @@ if(!function_exists('load_newsontwitter_config')){
 				$result[NEWSONTWITTER_CONSUMER_SECRET] = isset($pref[NEWSONTWITTER_CONSUMER_SECRET]) ? $pref[NEWSONTWITTER_CONSUMER_SECRET] : null;
 				{
 					$sql -> db_Select("newsontwitter_config");
-					while($row = $sql->db_Fetch()){
+					while($row = $sql->db_Fetch(MYSQL_ASSOC)){
 						$value = $row['newsontwitter_config_value'];
 						{
 							$key = $row['newsontwitter_config_key'];
@@ -78,7 +78,7 @@ if(!function_exists('load_newsontwitter_config')){
 	function update_newsontwitter_synchronization($time){
 		global $sql;
 		{
-			$sql->db_Delete("newsontwitter_config", " `newsontwitter_config_key` = '".NEWSONTWITTER_SYNCHRONIZATION."' ");
+			$sql->db_Delete("newsontwitter_config", "`newsontwitter_config_key` = '".NEWSONTWITTER_SYNCHRONIZATION."' ");
 			{
 				$sql->db_Insert("newsontwitter_config", array("newsontwitter_config_key" => NEWSONTWITTER_SYNCHRONIZATION, "newsontwitter_config_value" => $time));
 			}
